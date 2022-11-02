@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Gate;
 use Innoge\LaravelPolicySoftCache\Contracts\SoftCacheable;
 
 it('caches policy calls with SoftCacheable interface', function () {
+    Config::set('policy-soft-cache.cache_all_policies', false);
+
     $user = new User();
     $testModel = new TestModel();
     $testModel->setAttribute('id', 1);
@@ -18,9 +20,12 @@ it('caches policy calls with SoftCacheable interface', function () {
     expect(PolicyWithSoftCache::$called)->toBe(1);
 
     PolicyWithSoftCache::$called = 0;
+    Config::set('policy-soft-cache.cache_all_policies', true);
 });
 
 it('does not cache policy calls without SoftCacheable interface', function () {
+    Config::set('policy-soft-cache.cache_all_policies', false);
+
     $user = new User();
     $testModel = new TestModel();
     $testModel->setAttribute('id', 1);
@@ -34,11 +39,10 @@ it('does not cache policy calls without SoftCacheable interface', function () {
         ->toBe(2);
 
     PolicyWithoutSoftCache::$called = 0;
+    Config::set('policy-soft-cache.cache_all_policies', true);
 });
 
-it('caches all policy calls when cache_all_policies config is set', function () {
-    Config::set('policy-soft-cache.cache_all_policies', true);
-
+it('caches all policy calls by default', function () {
     $user = new User();
     $testModel = new TestModel();
     $testModel->setAttribute('id', 1);
@@ -49,8 +53,6 @@ it('caches all policy calls when cache_all_policies config is set', function () 
     $user->can('view', $testModel);
 
     expect(PolicyWithoutSoftCache::$called)->toBe(1);
-
-    Config::set('policy-soft-cache.cache_all_policies', false);
 
     PolicyWithoutSoftCache::$called = 0;
 });
