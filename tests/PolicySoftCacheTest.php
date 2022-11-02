@@ -8,6 +8,7 @@ use Innoge\LaravelPolicySoftCache\Contracts\SoftCacheable;
 it('caches policy calls with SoftCacheable interface', function () {
     $user = new User();
     $testModel = new TestModel();
+    $testModel->setAttribute('id', 1);
 
     Gate::policy(TestModel::class, PolicyWithSoftCache::class);
 
@@ -22,6 +23,7 @@ it('caches policy calls with SoftCacheable interface', function () {
 it('does not cache policy calls without SoftCacheable interface', function () {
     $user = new User();
     $testModel = new TestModel();
+    $testModel->setAttribute('id', 1);
 
     Gate::policy(TestModel::class, PolicyWithoutSoftCache::class);
 
@@ -39,6 +41,7 @@ it('caches all policy calls when cache_all_policies config is set', function () 
 
     $user = new User();
     $testModel = new TestModel();
+    $testModel->setAttribute('id', 1);
 
     Gate::policy(TestModel::class, PolicyWithoutSoftCache::class);
 
@@ -85,4 +88,5 @@ class PolicyWithoutSoftCache
 
 class TestModel extends Model
 {
+
 }

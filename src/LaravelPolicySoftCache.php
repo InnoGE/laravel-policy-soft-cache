@@ -24,8 +24,12 @@ class LaravelPolicySoftCache
 
     public function handleGateCall(mixed $user, string $ability, mixed $args): mixed
     {
-        if (! is_array($args)) {
+        if (!is_array($args)) {
             $args = [$args];
+        }
+
+        if (!($user instanceof Model)) {
+            return null;
         }
 
         $model = $args[0] ?? null;
@@ -44,9 +48,17 @@ class LaravelPolicySoftCache
         return $policy && ($policy instanceof SoftCacheable || config('policy-soft-cache.cache_all_policies', false) === true);
     }
 
-    protected function callPolicyMethod(mixed $user, Model $model, object $policy, string $ability, array $args): mixed
+    /**
+     * @param Model $user
+     * @param Model $model
+     * @param object $policy
+     * @param string $ability
+     * @param array<int,mixed> $args
+     * @return mixed
+     */
+    protected function callPolicyMethod(Model $user, Model $model, object $policy, string $ability, array $args): mixed
     {
-        $cacheKey = $this->getCacheKey($model, $ability);
+        $cacheKey = $this->getCacheKey($user, $model, $ability);
 
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
@@ -59,8 +71,8 @@ class LaravelPolicySoftCache
         return $result;
     }
 
-    protected function getCacheKey(Model $model, string $ability): string
+    protected function getCacheKey(Model $user, Model $model, string $ability): string
     {
-        return $model::class.'_'.$ability;
+        return $user->{$user->getKeyName()}. '_' . $model::class . '_' . $ability;
     }
 }

@@ -3,7 +3,6 @@
 namespace Innoge\LaravelPolicySoftCache;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -22,7 +21,7 @@ class LaravelPolicySoftCacheServiceProvider extends PackageServiceProvider
             ->hasConfigFile();
     }
 
-    public function boot()
+    public function boot(): void
     {
         $this->app->singleton(LaravelPolicySoftCache::class, function () {
             return new LaravelPolicySoftCache();
