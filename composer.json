@@ -1,6 +1,6 @@
 {
     "name": "innoge/laravel-policy-soft-cache",
-    "description": "This is my package laravel-policy-soft-cache",
+    "description": "This package helps prevent performance problems with frequent Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.",
     "keywords": [
         "innoge",
         "laravel",
