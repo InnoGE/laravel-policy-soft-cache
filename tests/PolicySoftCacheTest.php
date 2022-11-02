@@ -4,10 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Gate;
 use Innoge\LaravelPolicySoftCache\Contracts\SoftCacheable;
-use Innoge\LaravelPolicySoftCache\LaravelPolicySoftCache;
 
 it('caches policy calls with SoftCacheable interface', function () {
-    LaravelPolicySoftCache::flushCache();
     $user = new User();
     $testModel = new TestModel();
 
@@ -17,11 +15,11 @@ it('caches policy calls with SoftCacheable interface', function () {
     $user->can('view', $testModel);
 
     expect(PolicyWithSoftCache::$called)->toBe(1);
+
+    PolicyWithSoftCache::$called = 0;
 });
 
-
 it('does not cache policy calls without SoftCacheable interface', function () {
-    LaravelPolicySoftCache::flushCache();
     $user = new User();
     $testModel = new TestModel();
 
@@ -32,10 +30,11 @@ it('does not cache policy calls without SoftCacheable interface', function () {
 
     expect(PolicyWithoutSoftCache::$called)
         ->toBe(2);
+
+    PolicyWithoutSoftCache::$called = 0;
 });
 
 it('caches all policy calls when cache_all_policies config is set', function () {
-    LaravelPolicySoftCache::flushCache();
     Config::set('policy-soft-cache.cache_all_policies', true);
 
     $user = new User();
@@ -47,8 +46,18 @@ it('caches all policy calls when cache_all_policies config is set', function () 
     $user->can('view', $testModel);
 
     expect(PolicyWithoutSoftCache::$called)->toBe(1);
+
+    Config::set('policy-soft-cache.cache_all_policies', false);
+
+    PolicyWithoutSoftCache::$called = 0;
 });
 
+it('does not break normal gate calls', function () {
+    $user = new User();
+    $user->can('foo');
+
+    expect(true)->toBeTrue();
+});
 
 class PolicyWithSoftCache implements SoftCacheable
 {
@@ -57,6 +66,7 @@ class PolicyWithSoftCache implements SoftCacheable
     public function view(User $user, TestModel $model): bool
     {
         static::$called++;
+
         return true;
     }
 }
@@ -68,6 +78,7 @@ class PolicyWithoutSoftCache
     public function view(User $user, TestModel $model): bool
     {
         static::$called++;
+
         return true;
     }
 }

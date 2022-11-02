@@ -24,7 +24,15 @@ class LaravelPolicySoftCacheServiceProvider extends PackageServiceProvider
 
     public function boot()
     {
-        ray()->clearScreen();
+        $this->app->singleton(LaravelPolicySoftCache::class, function () {
+            return new LaravelPolicySoftCache();
+        });
+
+        /*
+         *  Flush Cache on every application boot
+         */
+        LaravelPolicySoftCache::flushCache();
+
         Gate::before(function (Model $user, string $ability, array $args) {
             return $this->app->make(LaravelPolicySoftCache::class)
                 ->handleGateCall($user, $ability, $args);
