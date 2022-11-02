@@ -88,5 +88,4 @@ class PolicyWithoutSoftCache
 
 class TestModel extends Model
 {
-
 }
