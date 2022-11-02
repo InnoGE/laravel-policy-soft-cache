@@ -5,7 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/innoge/laravel-policy-soft-cache/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/innoge/laravel-policy-soft-cache/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/innoge/laravel-policy-soft-cache.svg?style=flat-square)](https://packagist.org/packages/innoge/laravel-policy-soft-cache)
 
-This package helps prevent performance problems with frequent Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially.
+This package helps prevent performance problems with frequent Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.
 
 ## Beta
 Laravel Policy Soft Cache is still in beta and not recommended for production applications. If you have problems, please open an issue.
@@ -49,6 +49,9 @@ class UserPolicy implements SoftCacheable
     ...
 }
 ```
+
+## Clearing the cache
+Sometimes you want to clear the policy cache after model changes. You can call the ```Innoge\LaravelPolicySoftCache::flushCache();``` method.
 
 ## Testing
 
