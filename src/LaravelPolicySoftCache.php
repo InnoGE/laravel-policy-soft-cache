@@ -22,6 +22,12 @@ class LaravelPolicySoftCache
         app()->make(static::class)->cache = [];
     }
 
+    /**
+     * @param  mixed  $user
+     * @param  string  $ability
+     * @param  mixed  $args
+     * @return mixed
+     */
     public function handleGateCall(mixed $user, string $ability, mixed $args): mixed
     {
         if (! is_array($args)) {
@@ -37,12 +43,16 @@ class LaravelPolicySoftCache
         $policy = Gate::getPolicyFor($model);
 
         if ($model && $this->shouldCache($policy)) {
-            return $this->callPolicyMethod($user, $model, $policy, $ability, $args);
+            return $this->callPolicyMethod($user, $policy, $ability, $args);
         }
 
         return null;
     }
 
+    /**
+     * @param  object|null  $policy
+     * @return bool
+     */
     protected function shouldCache(?object $policy): bool
     {
         return $policy && ($policy instanceof SoftCacheable || config('policy-soft-cache.cache_all_policies', false) === true);
@@ -50,29 +60,34 @@ class LaravelPolicySoftCache
 
     /**
      * @param  Model  $user
-     * @param  Model  $model
      * @param  object  $policy
      * @param  string  $ability
      * @param  array<int,mixed>  $args
      * @return mixed
      */
-    protected function callPolicyMethod(Model $user, Model $model, object $policy, string $ability, array $args): mixed
+    protected function callPolicyMethod(Model $user, object $policy, string $ability, array $args): mixed
     {
-        $cacheKey = $this->getCacheKey($user, $model, $ability);
+        $cacheKey = $this->getCacheKey($user, $policy, $args, $ability);
 
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
         }
 
         $result = $policy->{$ability}(...array_merge([$user], $args));
-
         $this->cache[$cacheKey] = $result;
 
         return $result;
     }
 
-    protected function getCacheKey(Model $user, Model $model, string $ability): string
+    /**
+     * @param  Model  $user
+     * @param  object  $policy
+     * @param  array<int,mixed>  $args
+     * @param  string  $ability
+     * @return string
+     */
+    protected function getCacheKey(Model $user, object $policy, array $args, string $ability): string
     {
-        return $user->{$user->getKeyName()}.'_'.$model::class.'_'.$ability;
+        return $user->{$user->getKeyName()}.'_'.hash_hmac('sha512', (string) json_encode($args), config('app.key')).'_'.$ability.'_'.$policy::class;
     }
 }
