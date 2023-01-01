@@ -7,9 +7,6 @@
 
 This package helps prevent performance problems with duplicated Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.
 
-## Beta
-Laravel Policy Soft Cache is still in beta and not recommended for production applications. If you have problems, please open an issue.
-
 ## Installation
 
 You can install the package via composer:
