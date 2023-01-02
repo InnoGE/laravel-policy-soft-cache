@@ -7,6 +7,9 @@
 
 This package helps prevent performance problems with duplicated Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.
 
+## Requirements
+
+This package is compatible with ```Laravel 9``` and PHP 8.1 / 8.2.
 ## Installation
 
 You can install the package via composer:
