@@ -18,7 +18,7 @@ class LaravelPolicySoftCacheServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-policy-soft-cache')
-            ->hasConfigFile();
+            ->hasConfigFile('policy-soft-cache');
     }
 
     public function boot(): void
@@ -26,6 +26,10 @@ class LaravelPolicySoftCacheServiceProvider extends PackageServiceProvider
         $this->app->singleton(LaravelPolicySoftCache::class, function () {
             return new LaravelPolicySoftCache();
         });
+
+        $this->publishes([
+            __DIR__.'/../config/policy-soft-cache.php' => config_path('policy-soft-cache.php'),
+        ]);
 
         /*
          *  Flush Cache on every application boot
