@@ -1,8 +1,8 @@
 # Laravel Policy Soft Cache Package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/innoge/laravel-policy-soft-cache.svg?style=flat-square)](https://packagist.org/packages/innoge/laravel-policy-soft-cache)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/innoge/laravel-policy-soft-cache/run-tests?label=tests)](https://github.com/innoge/laravel-policy-soft-cache/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/innoge/laravel-policy-soft-cache/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/innoge/laravel-policy-soft-cache/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Tests](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/run-tests.yml/badge.svg)](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/run-tests.yml)
+[![Fix PHP code style issues](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/fix-php-code-style-issues.yml/badge.svg)](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/fix-php-code-style-issues.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/innoge/laravel-policy-soft-cache.svg?style=flat-square)](https://packagist.org/packages/innoge/laravel-policy-soft-cache)
 
 This package helps prevent performance problems with duplicated Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.
