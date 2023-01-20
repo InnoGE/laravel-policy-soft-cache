@@ -31,8 +31,13 @@ return [
     /*
      * When enabled, the package will cache the results of all Policies in your Laravel application
      */
-    'cache_all_policies' => true,
+    'cache_all_policies' => env('CACHE_ALL_POLICIES', true),
 ];
+```
+
+You can also use `CACHE_ALL_POLICIES` in your `.env` file to change it.
+```.dotenv
+CACHE_ALL_POLICIES=false
 ```
 
 ## Usage
