@@ -12,13 +12,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         php: [8.2, 8.1]
-        laravel: [9.*]
+        laravel: [10,9]
         stability: [prefer-lowest, prefer-stable]
-        include:
-          - laravel: 9.*
-            testbench: 7.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -40,11 +37,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: List Installed Dependencies
-        run: composer show -D
+          composer require 'illuminate/contracts=^${{ matrix.laravel }}.0' --no-update
+          composer update --prefer-dist --no-interaction --no-progress --${{ matrix.stability }}
 
       - name: Execute tests
-        run: vendor/bin/pest
+        run: vendor/bin/pest --verbose
