@@ -23,6 +23,24 @@ it('caches policy calls with SoftCacheable interface', function () {
     Config::set('policy-soft-cache.cache_all_policies', true);
 });
 
+it('does not cache policy calls when ability does not exist', function () {
+    Config::set('policy-soft-cache.cache_all_policies', false);
+
+    $user = new User();
+    $testModel = new TestModel();
+    $testModel->setAttribute('id', 1);
+
+    Gate::policy(TestModel::class, PolicyWithSoftCache::class);
+
+    $user->can('foo', $testModel);
+    $user->can('foo', $testModel);
+
+    expect(PolicyWithSoftCache::$called)->toBe(0);
+
+    PolicyWithSoftCache::$called = 0;
+    Config::set('policy-soft-cache.cache_all_policies', true);
+});
+
 it('does not cache policy calls without SoftCacheable interface', function () {
     Config::set('policy-soft-cache.cache_all_policies', false);
 

@@ -22,12 +22,6 @@ class LaravelPolicySoftCache
         app()->make(static::class)->cache = [];
     }
 
-    /**
-     * @param  mixed  $user
-     * @param  string  $ability
-     * @param  mixed  $args
-     * @return mixed
-     */
     public function handleGateCall(mixed $user, string $ability, mixed $args): mixed
     {
         if (! is_array($args)) {
@@ -42,28 +36,41 @@ class LaravelPolicySoftCache
 
         $policy = Gate::getPolicyFor($model);
 
-        if ($model && $this->shouldCache($policy)) {
+        if ($model && $this->shouldCache($policy, $ability)) {
             return $this->callPolicyMethod($user, $policy, $ability, $args);
         }
 
         return null;
     }
 
-    /**
-     * @param  object|null  $policy
-     * @return bool
-     */
-    protected function shouldCache(?object $policy): bool
+    protected function shouldCache(?object $policy, string $ability): bool
     {
-        return $policy && ($policy instanceof SoftCacheable || config('policy-soft-cache.cache_all_policies', false) === true);
+        // when policy is not filled don't cache it
+        if (blank($policy)) {
+            return false;
+        }
+
+        // when policy is not an object don't cache it
+        if (! is_object($policy)) {
+            return false;
+        }
+
+        // when policy doesn't have the ability don't cache it
+        if (! method_exists($policy, $ability)) {
+            return false;
+        }
+
+        // when policy is soft cacheable cache it
+        if ($policy instanceof SoftCacheable) {
+            return true;
+        }
+
+        // when config is set to cache all policies cache it
+        return config('policy-soft-cache.cache_all_policies', false) === true;
     }
 
     /**
-     * @param  Model  $user
-     * @param  object  $policy
-     * @param  string  $ability
      * @param  array<int,mixed>  $args
-     * @return mixed
      */
     protected function callPolicyMethod(Model $user, object $policy, string $ability, array $args): mixed
     {
@@ -80,11 +87,7 @@ class LaravelPolicySoftCache
     }
 
     /**
-     * @param  Model  $user
-     * @param  object  $policy
      * @param  array<int,mixed>  $args
-     * @param  string  $ability
-     * @return string
      */
     protected function getCacheKey(Model $user, object $policy, array $args, string $ability): string
     {
