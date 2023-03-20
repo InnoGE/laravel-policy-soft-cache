@@ -45,18 +45,27 @@ class LaravelPolicySoftCache
 
     protected function shouldCache(?object $policy, string $ability): bool
     {
+        // when policy is not filled don't cache it
         if (blank($policy)) {
             return false;
         }
 
+        // when policy is not an object don't cache it
+        if (! is_object($policy)) {
+            return false;
+        }
+
+        // when policy doesn't have the ability don't cache it
         if (! method_exists($policy, $ability)) {
             return false;
         }
 
+        // when policy is soft cacheable cache it
         if ($policy instanceof SoftCacheable) {
             return true;
         }
 
+        // when config is set to cache all policies cache it
         return config('policy-soft-cache.cache_all_policies', false) === true;
     }
 
