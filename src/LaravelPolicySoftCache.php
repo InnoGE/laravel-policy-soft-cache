@@ -42,7 +42,7 @@ class LaravelPolicySoftCache
 
         $policy = Gate::getPolicyFor($model);
 
-        if ($model && $this->shouldCache($policy)) {
+        if ($model && $this->shouldCache($policy, $ability)) {
             return $this->callPolicyMethod($user, $policy, $ability, $args);
         }
 
@@ -51,11 +51,24 @@ class LaravelPolicySoftCache
 
     /**
      * @param  object|null  $policy
+     * @param  string  $ability
      * @return bool
      */
-    protected function shouldCache(?object $policy): bool
+    protected function shouldCache(?object $policy, string $ability): bool
     {
-        return $policy && ($policy instanceof SoftCacheable || config('policy-soft-cache.cache_all_policies', false) === true);
+        if (blank($policy)) {
+            return false;
+        }
+
+        if (! method_exists($policy, $ability)) {
+            return false;
+        }
+
+        if ($policy instanceof SoftCacheable) {
+            return true;
+        }
+
+        return config('policy-soft-cache.cache_all_policies', false) === true;
     }
 
     /**
