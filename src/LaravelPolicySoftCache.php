@@ -80,6 +80,12 @@ class LaravelPolicySoftCache
             return $this->cache[$cacheKey];
         }
 
+        // If this first argument is a string, that means they are passing a class name to
+        // the policy, so we remove it because it shouldn't be in the method as parameter.
+        if (isset($args[0]) && is_string($args[0])) {
+            array_shift($args);
+        }
+
         $result = $policy->{$ability}(...array_merge([$user], $args));
         $this->cache[$cacheKey] = $result;
 
