@@ -84,8 +84,6 @@ it('does not break normal gate calls', function () {
 
 it('does not break if the action does not require a model instance', function () {
     $user = new User();
-    $testModel = new TestModel();
-    $testModel->setAttribute('id', 1);
 
     Gate::policy(TestModel::class, PolicyWithoutRequiredModel::class);
 
