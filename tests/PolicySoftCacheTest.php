@@ -82,6 +82,18 @@ it('does not break normal gate calls', function () {
     expect(true)->toBeTrue();
 });
 
+it('does not break if the action does not require a model instance', function () {
+    $user = new User();
+    $testModel = new TestModel();
+    $testModel->setAttribute('id', 1);
+
+    Gate::policy(TestModel::class, PolicyWithoutRequiredModel::class);
+
+    $user->can('create', [TestModel::class, 1]);
+
+    expect(true)->toBeTrue();
+});
+
 class PolicyWithSoftCache implements SoftCacheable
 {
     public static int $called = 0;
@@ -102,6 +114,14 @@ class PolicyWithoutSoftCache
     {
         static::$called++;
 
+        return true;
+    }
+}
+
+class PolicyWithoutRequiredModel
+{
+    public function create(User $user, int $value): bool
+    {
         return true;
     }
 }
