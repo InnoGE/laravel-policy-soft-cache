@@ -9,7 +9,7 @@ This package helps prevent performance problems with duplicated Policy calls wit
 
 ## Requirements
 
-This package is compatible with ```Laravel 9 & 10```, and PHP 8.1 & 8.2.
+This package is compatible with ```Laravel 9 & 10```, and PHP 8.1, 8.2 & 8.3.
 ## Installation
 
 You can install the package via composer:
