@@ -5,7 +5,7 @@
 [![Fix PHP code style issues](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/fix-php-code-style-issues.yml/badge.svg)](https://github.com/InnoGE/laravel-policy-soft-cache/actions/workflows/fix-php-code-style-issues.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/innoge/laravel-policy-soft-cache.svg?style=flat-square)](https://packagist.org/packages/innoge/laravel-policy-soft-cache)
 
-This package helps prevent performance problems with duplicated Policy calls within your application lifecycle. To achieve this policy-calls are soft cached after they have run initially. The cache does not cache policy calls through concurrent requests; only duplicated calls within a single request are cached.
+Optimize your Laravel application's performance with soft caching for policy checks. This package caches policy invocations to prevent redundant checks within the same request lifecycle, enhancing your application's response times.
 
 ## Requirements
 
