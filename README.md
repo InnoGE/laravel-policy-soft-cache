@@ -58,6 +58,41 @@ class UserPolicy implements SoftCacheable
 ## Clearing the cache
 Sometimes you want to clear the policy cache after model changes. You can call the ```Innoge\LaravelPolicySoftCache::flushCache();``` method.
 
+## Known Issues
+### Gate::before and Service Provider Load Order
+
+When the `innoge/laravel-policy-soft-cache` package is installed in an application that utilizes `Gate::before`, typically defined in the `AuthServiceProvider`, a conflict may arise due to the order in which service providers are loaded.
+
+#### Resolution Steps
+To resolve this issue, follow these steps:
+
+1. **Manual Service Provider Registration**: Add `\Innoge\LaravelPolicySoftCache\LaravelPolicySoftCacheServiceProvider::class` to the end of the `providers` array in your `config/app.php`. This manual registration ensures that the `LaravelPolicySoftCacheServiceProvider` loads after all other service providers, including `AuthServiceProvider`.
+
+    ```php
+    'providers' => [
+        // Other Service Providers
+
+        \Innoge\LaravelPolicySoftCache\LaravelPolicySoftCacheServiceProvider::class,
+    ],
+    ```
+
+2. **Disable Auto-Discovery for the Package**: To prevent Laravel's auto-discovery mechanism from automatically loading the service provider, add `innoge/laravel-policy-soft-cache` to the `dont-discover` array in your `composer.json`. This step is crucial for maintaining the manual load order.
+
+    ```json
+    "extra": {
+        "laravel": {
+            "dont-discover": ["innoge/laravel-policy-soft-cache"]
+        }
+    },
+    ```
+
+3. **Reinstall Dependencies**: After updating your `composer.json`, run `composer install` to apply the changes. This step is necessary for the changes to take effect.
+
+    ```bash
+    composer install
+    ```
+
+
 ## Testing
 
 ```bash
