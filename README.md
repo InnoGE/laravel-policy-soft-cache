@@ -21,7 +21,7 @@ composer require innoge/laravel-policy-soft-cache
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --provider="Innoge\LaravelPolicySoftCache\LaravelPolicySoftCacheServiceProvider""
+php artisan vendor:publish --provider="Innoge\LaravelPolicySoftCache\LaravelPolicySoftCacheServiceProvider"
 ```
 
 This is the contents of the published config file:
