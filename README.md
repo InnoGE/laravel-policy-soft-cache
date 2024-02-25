@@ -9,7 +9,7 @@ Optimize your Laravel application's performance with soft caching for policy che
 
 ## Requirements
 
-This package is compatible with ```Laravel 9 & 10```, and PHP 8.1, 8.2 & 8.3.
+This package is compatible with ```Laravel 9, 10, 11 ```, and PHP 8.1, 8.2 & 8.3.
 ## Installation
 
 You can install the package via composer:
