@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#2 \\$data of function hash_hmac expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/LaravelPolicySoftCache.php
