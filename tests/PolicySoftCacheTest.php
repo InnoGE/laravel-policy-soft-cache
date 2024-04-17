@@ -92,6 +92,20 @@ it('does not break if the action does not require a model instance', function ()
     expect(true)->toBeTrue();
 });
 
+it('caches correct value if it depends on the user class', function () {
+    $user = new User();
+    $customUser = new CustomUser();
+    $testModel = new TestModel();
+
+    Gate::policy(TestModel::class, PolicyWithDifferingCustomUserLogic::class);
+
+    $userCanView = $user->can('view', $testModel);
+    expect($userCanView)->toBeTrue();
+
+    $customUserCanView = $customUser->can('view', $testModel);
+    expect($customUserCanView)->toBeFalse();
+});
+
 class PolicyWithSoftCache implements SoftCacheable
 {
     public static int $called = 0;
@@ -126,4 +140,20 @@ class PolicyWithoutRequiredModel
 
 class TestModel extends Model
 {
+}
+
+class CustomUser extends User
+{
+}
+
+class PolicyWithDifferingCustomUserLogic implements SoftCacheable
+{
+    public function view(User|CustomUser $user, TestModel $model): bool
+    {
+        if ($user instanceof CustomUser) {
+            return false;
+        }
+
+        return true;
+    }
 }
