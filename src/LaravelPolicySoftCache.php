@@ -97,6 +97,15 @@ class LaravelPolicySoftCache
      */
     protected function getCacheKey(Model $user, object $policy, array $args, string $ability): string
     {
-        return get_class($user).'_'.$user->{$user->getKeyName()}.'_'.hash_hmac('sha512', (string) json_encode($args), config('app.key')).'_'.$ability.'_'.$policy::class;
+        return collect([
+            //the user class
+            get_class($user),
+            //the user id
+            $user->{$user->getKeyName()},
+            //hash of the arguments
+            hash_hmac('sha512', json_encode($args), config('app.key')),
+            $ability,
+            get_class($policy),
+        ])->join('_');
     }
 }
